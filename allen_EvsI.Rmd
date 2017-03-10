@@ -1,0 +1,18 @@
+---
+title: "allen_EvsI"
+output: html_document
+---
+
+### Data load, library load 
+```{r echo=FALSE, include=FALSE}
+d <- read.csv("ephy_wona.csv")
+d <- d[2:15]
+
+require(ggplot2)
+require(moonBook)
+require(ztable)
+```
+```{r echo=FALSE, include=FALSE}
+ei_table<-ztable(mytable(ExIn~.,data=d))
+print(ei_table)
+```
