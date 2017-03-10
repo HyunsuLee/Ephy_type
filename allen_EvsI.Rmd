@@ -7,12 +7,37 @@ output: html_document
 ```{r echo=FALSE, include=FALSE}
 d <- read.csv("ephy_wona.csv")
 d <- d[2:15]
+d_sub <-d[1:13]
 
 require(ggplot2)
 require(moonBook)
 require(ztable)
+require(reshape2)
 ```
+
+### making table
 ```{r echo=FALSE, include=FALSE}
-ei_table<-ztable(mytable(ExIn~.,data=d))
+ei_table<-ztable(mytable(ExIn~.,data=d_sub))
 print(ei_table)
+```
+
+## ploting the variable.
+```{r echo=FALSE, include=FALSE}
+## for plot facetting making data melt.
+melt_d<-melt(d_sub)
+
+ggplot(melt_d, aes(ExIn, value)) +
+  #박스 플랏, point jittering
+  geom_boxplot(width = 0.4) +#geom_jitter(width=0.4) + 
+  #axis labelling 바꾸기
+  labs(x = "", y = "") + 
+  # 배경 하얗게
+  theme_classic()+theme_linedraw()+theme_light() + 
+  # tick size, axis tile size 조절
+  theme(axis.text =element_text(size = 9)) + theme(axis.title=element_text(size=11)) +
+  #facetting & y 축 scale 풀어주기, facet labbelling 밑으로 보내기
+  facet_wrap(~variable, scales="free", switch ="x") + 
+  #facet label 배경 하얗게, text colour 검은색 만들어주기
+  theme(strip.background=element_blank(), strip.text.x=element_text(colour = "black", size=11))
+
 ```
