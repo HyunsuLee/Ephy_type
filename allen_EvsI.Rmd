@@ -43,6 +43,7 @@ ggplot(melt_d, aes(neuron, value)) +
   #facet label 배경 하얗게, text colour 검은색 만들어주기
   theme(strip.background=element_blank(), strip.text.x=element_text(colour = "black", size=11))
 
+
 ```
 
 
