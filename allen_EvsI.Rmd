@@ -23,10 +23,13 @@ print(ei_table)
 
 ## ploting the variable.
 ```{r echo=FALSE, include=FALSE}
+## rename the colnames
+colnames(d) <- c("Ratio", "Adaptation", "Threshold (pA)", "tau (ms)", "ISI (ms)","FR (Hz)", "IR (MOhm)", "Peak time (ms)", "Vrest (mV)", "trough (mV)", "Peak amp (mV)", "Height (mV)", "neuron", "line")
+d_sub <- d[1:13]
 ## for plot facetting making data melt.
 melt_d<-melt(d_sub)
 
-ggplot(melt_d, aes(ExIn, value)) +
+ggplot(melt_d, aes(neuron, value)) +
   #박스 플랏, point jittering
   geom_boxplot(width = 0.4) +#geom_jitter(width=0.4) + 
   #axis labelling 바꾸기
@@ -41,3 +44,6 @@ ggplot(melt_d, aes(ExIn, value)) +
   theme(strip.background=element_blank(), strip.text.x=element_text(colour = "black", size=11))
 
 ```
+
+
+
