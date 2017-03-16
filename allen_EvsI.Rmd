@@ -20,29 +20,42 @@ require(reshape2)
 ei_table<-ztable(mytable(ExIn~.,data=d_sub))
 print(ei_table)
 ```
+## data subsetting
+```{r echo=FALSE, include=FALSE}
+d_e <- subset(d, d$ExIn == 'E')
+mean(d_e$ef__adaptation)
+sd(d_e$ef__adaptation)
+
+d_i <- subset(d, d$ExIn == 'I')
+mean(d_i$ef__adaptation)
+sd(d_i$ef__adaptation)
+
+```
+
 
 ## ploting the variable.
 ```{r echo=FALSE, include=FALSE}
 ## rename the colnames
-colnames(d) <- c("Ratio", "Adaptation", "Threshold (pA)", "tau (ms)", "ISI (ms)","FR (Hz)", "IR (MOhm)", "Peak time (ms)", "Vrest (mV)", "trough (mV)", "Peak amp (mV)", "Height (mV)", "neuron", "line")
+colnames(d) <- c("ratio", "adaptation", "threshold (pA)", "tau (ms)", "ISI (ms)","FR (Hz)", "IR (MOhm)", "peak time (ms)", "Vrest (mV)", "trough (mV)", "peak amp (mV)", "height (mV)", "neuron", "line")
 d_sub <- d[1:13]
 ## for plot facetting making data melt.
 melt_d<-melt(d_sub)
 
 ggplot(melt_d, aes(neuron, value)) +
   #박스 플랏, point jittering
-  geom_boxplot(width = 0.4) +#geom_jitter(width=0.4) + 
+  geom_boxplot(width = 0.6, outlier.size = 0.6) + # geom_jitter(width=0.4) + 
   #axis labelling 바꾸기
   labs(x = "", y = "") + 
   # 배경 하얗게
   theme_classic()+theme_linedraw()+theme_light() + 
   # tick size, axis tile size 조절
-  theme(axis.text =element_text(size = 9)) + theme(axis.title=element_text(size=11)) +
+  theme(axis.text =element_text(size = 8)) + theme(axis.title=element_text(size=8)) +
   #facetting & y 축 scale 풀어주기, facet labbelling 밑으로 보내기
-  facet_wrap(~variable, scales="free", switch ="x") + 
-  #facet label 배경 하얗게, text colour 검은색 만들어주기
-  theme(strip.background=element_blank(), strip.text.x=element_text(colour = "black", size=11))
+  facet_wrap(~variable, scales="free", strip.position = "left") + 
+  #facet label 배경 하얗게, text colour 검은색 만들어주기, strip 위치를 tick label outside로.
+  theme(strip.background=element_blank(), strip.placement = "outside",strip.text.y=element_text(colour = "black", size=8))
 
+ggsave("fig1.tiff", units = "cm", width = 16, height = 10, dpi = 300)
 
 ```
 
