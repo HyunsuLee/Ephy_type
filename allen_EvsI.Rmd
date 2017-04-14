@@ -7,12 +7,16 @@ output: html_document
 ```{r echo=FALSE, include=FALSE}
 d <- read.csv("ephy_wona.csv")
 d <- d[2:15]
-d_sub <-d[1:13]
 
 require(ggplot2)
 require(moonBook)
 require(ztable)
 require(reshape2)
+```
+
+### column swap
+```{r echo=FALSE, include=FALSE}
+d <- d[ , c(9, 4, 7, 11, 10, 12, 1, 2, 3, 5, 6, 8, 13:ncol(d))]
 ```
 
 ### making table
@@ -36,7 +40,7 @@ sd(d_i$ef__adaptation)
 ## ploting the variable.
 ```{r echo=FALSE, include=FALSE}
 ## rename the colnames
-colnames(d) <- c("ratio", "adaptation", "threshold (pA)", "tau (ms)", "ISI (ms)","FR (Hz)", "IR (MOhm)", "peak time (ms)", "Vrest (mV)", "trough (mV)", "peak amp (mV)", "height (mV)", "neuron", "line")
+colnames(d) <- c("Vrest (mV)", "tau (ms)", "IR (MOhm)", "peak amp (mV)", "trough (mV)", "height (mV)", "ratio", "adaptation", "threshold (pA)",  "ISI (ms)","FR (Hz)",  "peak time (ms)", "neuron", "line")
 d_sub <- d[1:13]
 ## for plot facetting making data melt.
 melt_d<-melt(d_sub)
