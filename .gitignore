@@ -11,3 +11,7 @@
 # data folder
 Ephys_nwb/
 
+# jupyter notebook stuffs
+.ipynb_checkpoints/
+
+
