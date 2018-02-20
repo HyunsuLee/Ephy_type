@@ -20,4 +20,6 @@ specimen_**
 # tensorflow model. logs.
 /logs
 /model
+**/logs/
+**/model/
 
