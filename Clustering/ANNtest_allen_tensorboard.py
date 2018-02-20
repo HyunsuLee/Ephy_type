@@ -20,16 +20,16 @@ X = tf.placeholder(tf.float32, [None, 43])
 Y = tf.placeholder(tf.float32, [None, 2])
 
 with tf.name_scope('layer1'):
-    W1 = tf.Variable(tf.random_normal([43, 20], stddev=0.01), name='W1')
+    W1 = tf.Variable(tf.truncated_normal([43, 20], stddev=0.1), name='W1')
     # ReLU function for layer 1. 20 nodes.
     L1 = tf.nn.relu(tf.matmul(X, W1))
 
 with tf.name_scope('layer2'):
-    W2 = tf.Variable(tf.random_normal([20, 10], stddev=0.01), name='W2')
+    W2 = tf.Variable(tf.truncated_normal([20, 10], stddev=0.01), name='W2')
     L2 = tf.nn.relu(tf.matmul(L1, W2))
 
 with tf.name_scope('output'):
-    W3 = tf.Variable(tf.random_normal([10, 2], stddev=0.01), name='W3')
+    W3 = tf.Variable(tf.truncated_normal([10, 2], stddev=0.01), name='W3')
     # binary class(2).
     model = tf.matmul(L2, W3)
 
@@ -65,7 +65,7 @@ for epoch in range(10000):
         writer.add_summary(s, start*epoch)
         sess.run(optimizer, feed_dict={X: trainX[start:end], Y: trainY[start:end]})
     if (epoch % 500) == 0:
-        saver.save(sess, './model/ANN.ckpt', epoch)
+        saver.save(sess, './model/LR_e-3/ANN.ckpt', epoch)
         print('Epoch:', '%04d' % (epoch +1))
 
 
