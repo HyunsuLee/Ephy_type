@@ -17,4 +17,7 @@ specimen_**
 .ipynb_checkpoints
 **/.ipynb_checkpoints/
 
+# tensorflow model. logs.
+/logs
+/model
 
