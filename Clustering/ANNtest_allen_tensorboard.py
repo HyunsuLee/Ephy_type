@@ -51,7 +51,7 @@ with tf.name_scope('optimizer'):
     # lossL2 =  tf.reduce_mean(tf.nn.l2_loss(W1) + 
     # tf.nn.l2_loss(W2) + tf.nn.l2_loss(W3))* 0.01
     cost = base_cost # + lossL2 
-    optimizer = tf.train.AdamOptimizer(0.0001).minimize(cost)
+    optimizer = tf.train.AdamOptimizer(0.001).minimize(cost)
     tf.summary.scalar('cost', cost)
 
 with tf.name_scope("accuracy"):
@@ -66,7 +66,7 @@ saver = tf.train.Saver()
 sess = tf.Session()
 
 sess.run(tf.global_variables_initializer())
-log_path = '/180222leakyrelu/100000step/'
+log_path = '/180222leakyrelu/LRe-3_100000step/'
 summaries_dir = './logs/' + log_path
 train_writer = tf.summary.FileWriter(summaries_dir + '/train')
 test_writer = tf.summary.FileWriter(summaries_dir + '/test')
