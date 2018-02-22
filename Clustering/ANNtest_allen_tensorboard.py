@@ -91,6 +91,10 @@ for epoch in range(100000):
     if (epoch % 500) == 0:
         saver.save(sess, './model/' + log_path + '/ANN.ckpt', epoch)
         print('Epoch:', '%04d' % (epoch +1))
+        test_cost = sess.run(cost, feed_dict={X: testX, Y: testY, keep_prob: 1.0})
+        print('Test cost:', '{:.3f}'.format(test_cost))
+        print('Test accuracy:', '{:.3f}'.format(test_acc))
+
 
 
 
