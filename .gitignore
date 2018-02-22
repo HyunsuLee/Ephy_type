@@ -23,3 +23,5 @@ specimen_**
 **/logs/
 **/model/
 
+# vs code stuffs
+.vscode
