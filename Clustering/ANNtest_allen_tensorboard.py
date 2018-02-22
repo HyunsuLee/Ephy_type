@@ -66,7 +66,7 @@ saver = tf.train.Saver()
 sess = tf.Session()
 
 sess.run(tf.global_variables_initializer())
-log_path = '/180222/leakyrelu_25000_dropout/'
+log_path = '/180222leakyrelu/100000step/'
 summaries_dir = './logs/' + log_path
 train_writer = tf.summary.FileWriter(summaries_dir + '/train')
 test_writer = tf.summary.FileWriter(summaries_dir + '/test')
@@ -76,7 +76,7 @@ train_writer.add_graph(sess.graph)
 # batch_size = 128
 # total_batch = int(len(trainX) / batch_size)
 
-for epoch in range(25000):
+for epoch in range(100000):
     # for start, end in zip(range(0, len(trainX), batch_size),
     #    range(batch_size, len(trainX)+1, batch_size)):
     #    sess.run(optimizer, feed_dict={X: trainX[start:end], Y: trainY[start:end]})
