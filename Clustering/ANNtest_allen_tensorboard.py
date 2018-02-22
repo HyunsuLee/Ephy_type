@@ -33,7 +33,7 @@ with tf.name_scope('layer2'):
     Xavier_init = np.sqrt(2) * np.sqrt(2 / (20 + 10))
     W2 = tf.Variable(tf.truncated_normal([20, 10], stddev=Xavier_init), name='W2')
     b2 = tf.Variable(tf.random_normal([10]))
-    L2 = tf.nn.leak_relu(tf.matmul(L1, W2) + b2)
+    L2 = tf.nn.leaky_relu(tf.matmul(L1, W2) + b2)
     L2 = tf.nn.dropout(L2, keep_prob)
     tf.summary.histogram("W2", W2)
 
