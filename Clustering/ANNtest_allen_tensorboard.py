@@ -10,10 +10,10 @@ Created on Tue Feb 20 15:07:38 2018
 import tensorflow as tf
 import numpy as np
 
-trainX = np.loadtxt('cretrainX.csv', delimiter = ',')
+trainX = np.loadtxt('cretrainX_minmax.csv', delimiter = ',')
 trainY = np.loadtxt('cretrainY.csv', delimiter = ',')
 
-testX = np.loadtxt('cretestX.csv', delimiter = ',')
+testX = np.loadtxt('cretestX_minmax.csv', delimiter = ',')
 testY = np.loadtxt('cretestY.csv', delimiter = ',')
 
 X = tf.placeholder(tf.float32, [None, 43])
@@ -45,18 +45,13 @@ with tf.name_scope('output'):
 with tf.name_scope('optimizer'):
     cost = tf.reduce_mean(
         tf.nn.softmax_cross_entropy_with_logits(logits=model, labels=Y))
-    optimizer = tf.train.AdamOptimizer(0.001).minimize(cost)
+    optimizer = tf.train.AdamOptimizer(0.0001).minimize(cost)
     tf.summary.scalar('cost', cost)
 
-with tf.name_scope("training_accuracy"):
+with tf.name_scope("accuracy"):
     is_correct = tf.equal(tf.argmax(model, 1), tf.argmax(Y, 1))
     accuracy = tf.reduce_mean(tf.cast(is_correct, tf.float32))
-    tf.summary.scalar("training_accuracy", accuracy)
-
-with tf.name_scope("test_accuracy"):
-    is_correct = tf.equal(tf.argmax(model, 1), tf.argmax(Y, 1))
-    accuracy = tf.reduce_mean(tf.cast(is_correct, tf.float32))
-    tf.summary.scalar("test_accuracy", accuracy)
+    tf.summary.scalar("accuracy", accuracy)
 
 summ = tf.summary.merge_all()
 
@@ -65,26 +60,29 @@ saver = tf.train.Saver()
 sess = tf.Session()
 
 sess.run(tf.global_variables_initializer())
-writer = tf.summary.FileWriter('./logs/180221/LR_e-3b')
+summaries_dir = './logs/180222/LR_e-4_50000/'
+train_writer = tf.summary.FileWriter(summaries_dir + '/train')
+test_writer = tf.summary.FileWriter(summaries_dir + '/test')
 # $ tensorboard --logdir=./logs
-writer.add_graph(sess.graph)
+train_writer.add_graph(sess.graph)
 
-batch_size = 128
-total_batch = int(len(trainX) / batch_size)
+# batch_size = 128
+# total_batch = int(len(trainX) / batch_size)
 
-for epoch in range(5000):
-    for start, end in zip(range(0, len(trainX), batch_size),
-        range(batch_size, len(trainX)+1, batch_size)):
-        sess.run(optimizer, feed_dict={X: trainX[start:end], Y: trainY[start:end]})
+for epoch in range(50000):
+    # for start, end in zip(range(0, len(trainX), batch_size),
+    #    range(batch_size, len(trainX)+1, batch_size)):
+    #    sess.run(optimizer, feed_dict={X: trainX[start:end], Y: trainY[start:end]})
+    sess.run(optimizer, feed_dict={X: trainX, Y: trainY})
     if (epoch % 5) == 0:
         train_acc, train_summ = sess.run([accuracy, summ], feed_dict={X: trainX, Y: trainY})
-        writer.add_summary(train_summ, epoch)
+        train_writer.add_summary(train_summ, epoch)
 
         test_acc, test_summ = sess.run([accuracy, summ], feed_dict={X: testX, Y: testY})
-        writer.add_summary(test_summ, epoch)
+        test_writer.add_summary(test_summ, epoch)
 
     if (epoch % 500) == 0:
-        saver.save(sess, './model/180221/LR_e-3b/ANN.ckpt', epoch)
+        saver.save(sess, './model/180222/LR_e-4_50000/ANN.ckpt', epoch)
         print('Epoch:', '%04d' % (epoch +1))
 
 
