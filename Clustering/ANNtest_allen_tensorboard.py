@@ -43,8 +43,11 @@ with tf.name_scope('output'):
     tf.summary.histogram("W3", W2)
 
 with tf.name_scope('optimizer'):
-    cost = tf.reduce_mean(
+    base_cost = tf.reduce_mean(
         tf.nn.softmax_cross_entropy_with_logits(logits=model, labels=Y))
+    lossL2 =  tf.reduce_mean(tf.nn.l2_loss(W1) + tf.nn.l2_loss(W2) + tf.nn.l2_loss(W3)
+    )* 0.01
+    cost = base_cost + lossL2 
     optimizer = tf.train.AdamOptimizer(0.0001).minimize(cost)
     tf.summary.scalar('cost', cost)
 
@@ -60,7 +63,8 @@ saver = tf.train.Saver()
 sess = tf.Session()
 
 sess.run(tf.global_variables_initializer())
-summaries_dir = './logs/180222/LR_e-4_50000/'
+log_path = '/180222/LR_e-4_50000_reg/'
+summaries_dir = './logs/' + log_path
 train_writer = tf.summary.FileWriter(summaries_dir + '/train')
 test_writer = tf.summary.FileWriter(summaries_dir + '/test')
 # $ tensorboard --logdir=./logs
@@ -82,7 +86,7 @@ for epoch in range(50000):
         test_writer.add_summary(test_summ, epoch)
 
     if (epoch % 500) == 0:
-        saver.save(sess, './model/180222/LR_e-4_50000/ANN.ckpt', epoch)
+        saver.save(sess, './model/' + log_path + '/ANN.ckpt', epoch)
         print('Epoch:', '%04d' % (epoch +1))
 
 
