@@ -19,21 +19,32 @@ testY = np.loadtxt('cretestY.csv', delimiter = ',')
 X = tf.placeholder(tf.float32, [None, 43])
 Y = tf.placeholder(tf.float32, [None, 2])
 keep_prob = tf.placeholder(tf.float32)
+epsilon = 1e-3 # for Batch normalization
 
 with tf.name_scope('layer1'):
     Xavier_init = np.sqrt(2) * np.sqrt(2 / (43 + 20))
     W1 = tf.Variable(tf.truncated_normal([43, 20], stddev=Xavier_init), name='W1')
     # ReLU function for layer 1. 20 nodes.
-    b1 = tf.Variable(tf.random_normal([20]))
-    L1 = tf.nn.leaky_relu(tf.matmul(X, W1) + b1)
+    # b1 = tf.Variable(tf.random_normal([20])) # using beta1 in batch normalization
+    scale1 = tf.Variable(tf.ones([20])) # for BN
+    beta1 = tf.Variable(tf.zeros([20])) # for BN
+    z1 = tf.matmul(X, W1)
+    batch_mean1, batch_var1 = tf.nn.moments(z1, [0])
+    BN1 = tf.nn.batch_normalization(z1, batch_mean1, batch_var1, beta1, scale1, epsilon) 
+    L1 = tf.nn.leaky_relu(BN1)
     L1 = tf.nn.dropout(L1, keep_prob)
     tf.summary.histogram("W1", W1)
 
 with tf.name_scope('layer2'):
     Xavier_init = np.sqrt(2) * np.sqrt(2 / (20 + 10))
     W2 = tf.Variable(tf.truncated_normal([20, 10], stddev=Xavier_init), name='W2')
-    b2 = tf.Variable(tf.random_normal([10]))
-    L2 = tf.nn.leaky_relu(tf.matmul(L1, W2) + b2)
+    # b2 = tf.Variable(tf.random_normal([10]))
+    scale2 = tf.Variable(tf.ones([10]))
+    beta2 = tf.Variable(tf.zeros([10]))
+    z2 = tf.matmul(L1, W2)
+    batch_mean2, batch_var2 = tf.nn.moments(z2, [0])
+    BN2 = tf.nn.batch_normalization(z2, batch_mean2, batch_var2, beta2, scale2, epsilon)
+    L2 = tf.nn.leaky_relu(BN2)
     L2 = tf.nn.dropout(L2, keep_prob)
     tf.summary.histogram("W2", W2)
 
@@ -66,7 +77,7 @@ saver = tf.train.Saver()
 sess = tf.Session()
 
 sess.run(tf.global_variables_initializer())
-log_path = '/180222leakyrelu/LRe-3_100000step/'
+log_path = '/180222leakyrelu/LRe-3_BN_50000step/'
 summaries_dir = './logs/' + log_path
 train_writer = tf.summary.FileWriter(summaries_dir + '/train')
 test_writer = tf.summary.FileWriter(summaries_dir + '/test')
@@ -76,7 +87,7 @@ train_writer.add_graph(sess.graph)
 # batch_size = 128
 # total_batch = int(len(trainX) / batch_size)
 
-for epoch in range(100000):
+for epoch in range(50000):
     # for start, end in zip(range(0, len(trainX), batch_size),
     #    range(batch_size, len(trainX)+1, batch_size)):
     #    sess.run(optimizer, feed_dict={X: trainX[start:end], Y: trainY[start:end]})
