@@ -21,6 +21,11 @@ Y = tf.placeholder(tf.float32, [None, 2])
 keep_prob = tf.placeholder(tf.float32)
 epsilon = 1e-3 # for Batch normalization
 
+# TODO, batch normalization should not be applying in test session. 
+# writing wrapper function to calculate validation. 
+# by the way, batch normalization works faster
+# TODO, model wrapper for trying multiple random hyperparameter.
+
 with tf.name_scope('layer1'):
     Xavier_init = np.sqrt(2) * np.sqrt(2 / (43 + 20))
     W1 = tf.Variable(tf.truncated_normal([43, 20], stddev=Xavier_init), name='W1')
