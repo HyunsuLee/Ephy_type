@@ -25,6 +25,7 @@ epsilon = 1e-3 # for Batch normalization
 # writing wrapper function to calculate validation. 
 # by the way, batch normalization works faster
 # TODO, model wrapper for trying multiple random hyperparameter.
+# above things will be done in other py.
 
 with tf.name_scope('layer1'):
     Xavier_init = np.sqrt(2) * np.sqrt(2 / (43 + 20))
