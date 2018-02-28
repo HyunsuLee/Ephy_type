@@ -8,7 +8,7 @@
 import tensorflow as tf
 import numpy as np
 
-ᅟdata_path = './180228tensordata_minmax/'
+data_path = './180228tensordata_minmax/'
 """
 there are total 48 csv files.
 
@@ -40,7 +40,7 @@ testY = np.loadtxt(data_path + 'BtestY.csv', delimiter = ',')
 X = tf.placeholder(tf.float32, [None, 43]) # for full model, 43 input features
 Y = tf.placeholder(tf.float32, [None, 2]) # binary E vs I class
 keep_prob = tf.placeholder(tf.float32)
-is_training = tf.placeholder(tf.bool)
+is_training = tf.placeholder(tf.int32)
 epsilon = 1e-3 # for Batch normalization
 layer1_shape = [43, 20]
 layer2_shape = [20, 10]
@@ -59,7 +59,7 @@ def batch_norm_wrapper(inputs, is_training, decay = 0.999):
     pop_mean = tf.Variable(tf.zeros([inputs.get_shape()[-1]]), trainable=False)
     pop_var = tf.Variable(tf.ones([inputs.get_shape()[-1]]), trainable=False)
 
-    if is_training:
+    if is_training == 1:
         batch_mean, batch_var = tf.nn.moments(inputs,[0])
         train_mean = tf.assign(pop_mean,
                                pop_mean * decay + batch_mean * (1 - decay))
@@ -92,7 +92,7 @@ with tf.name_scope('layer2'):
 with tf.name_scope('output'):
     W3 = weight_init(output_shape, 'W3')
     b3 = tf.Variable(tf.random_normal([output_shape[1]]))
-    model = tf.matmul(L3, W3) + b3
+    model = tf.matmul(L2, W3) + b3
     tf.summary.histogram('W3', W3)
 
 
