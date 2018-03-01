@@ -101,7 +101,7 @@ for model in range(total_model_test):
     sess.run(tf.global_variables_initializer())
     
     each_model_dir = ('LR'+'{:.3e}'.format(random_learning_rate) 
-                + 'Beta' + '{:.3e}'.format(random_L2beta) + '/'
+                + 'Beta' + '{:.3e}'.format(random_L2beta) + '/')
     train_writer = tf.summary.FileWriter(summaries_dir + 
             each_model_dir + '/train')
     test_writer = tf.summary.FileWriter(summaries_dir + 
@@ -118,17 +118,20 @@ for model in range(total_model_test):
         if (epoch % 50) == 0:
             train_acc, train_summ = sess.run([accuracy, summ], 
                         feed_dict={X: trainX, Y: trainY, keep_prob: 1.0, 
-                        is_training_holder: 1, learning_rate: random_learning_rate})
+                        is_training_holder: 1, learning_rate: random_learning_rate, 
+                        L2beta: random_L2beta})
             train_writer.add_summary(train_summ, epoch)
 
             test_acc, test_summ = sess.run([accuracy, summ], 
                         feed_dict={X: testX, Y: testY, keep_prob: 1.0, 
-                        is_training_holder: 0, learning_rate: random_learning_rate})
+                        is_training_holder: 0, learning_rate: random_learning_rate, 
+                        L2beta: random_L2beta})
             test_writer.add_summary(test_summ, epoch)
         if (epoch % 500) == 0:
             test_cost = sess.run(cost, 
                         feed_dict={X: testX, Y: testY, keep_prob: 1.0, 
-                        is_training_holder: 0, learning_rate: random_learning_rate})
+                        is_training_holder: 0, learning_rate: random_learning_rate, 
+                        L2beta: random_L2beta})
             print('Epoch:', '%04d' % (epoch +1), 'Test cost:', '{:.4f}'.format(test_cost),
                   'Test accuracy:', '{:.4f}'.format(test_acc))
     
