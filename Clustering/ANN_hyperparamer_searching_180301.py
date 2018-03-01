@@ -94,7 +94,7 @@ sess = tf.Session()
 
 # TODO coarse iteration때는 test용이기 때문에 model, tensor logs를 안남기고,
 # fine tuning때 남길것.
-total_model_test = 2
+total_model_test = 500 
 LR_list = []
 L2beta_list = []
 test_cost_list = []
@@ -132,9 +132,9 @@ combine_list = np.array(combine_list)
 import pandas as pd
 
 results = pd.DataFrame(combine_list.T, 
-        columns=['learning_rate'], ['L2_beta'], ['test_cost'], ['test_accuracy'])
+        columns=['learning_rate', 'L2_beta', 'test_cost', 'test_accuracy'])
 
-resulst.to_csv('./180301_hyparameter_test/binary_full.csv')
+results.to_csv('./180301_hyperparameter_test/binary_full.csv')
 
 
 
