@@ -79,7 +79,7 @@ with tf.name_scope('layer1'):
     W1 = weight_init(layer1_shape, 'W1')
     z1 = tf.matmul(X, W1)
     # BN1 = batch_norm_wrapper(z1, is_training)
-    BN1 = tf.contrib.layers.batch_norm(z1, center = True, scale = True
+    BN1 = tf.contrib.layers.batch_norm(z1, center = True, scale = True,
           is_training = is_training_holder) 
     L1 = tf.nn.relu(BN1)
     L1 = tf.nn.dropout(L1, keep_prob)
@@ -89,7 +89,7 @@ with tf.name_scope('layer2'):
     W2 = weight_init(layer2_shape, 'W2')
     z2 = tf.matmul(L1, W2)
     # BN2 = batch_norm_wrapper(z2, is_training)
-    BN2 = tf.contrib.layers.batch_norm(z2, center = True, scale = True
+    BN2 = tf.contrib.layers.batch_norm(z2, center = True, scale = True,
           is_training = is_training_holder) 
     L2 = tf.nn.relu(BN2)
     L2 = tf.nn.dropout(L2, keep_prob)
