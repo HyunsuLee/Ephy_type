@@ -40,6 +40,7 @@ Y = tf.placeholder(tf.float32, [None, 2]) # binary E vs I class
 keep_prob = tf.placeholder(tf.float32)
 is_training_holder = tf.placeholder(tf.bool)
 learning_rate = tf.placeholder(tf.float32)
+L2beta = tf.placeholder(tf.float32)
 epsilon = 1e-3 # for Batch normalization
 layer1_shape = [43, 20]
 layer2_shape = [20, 10]
@@ -75,9 +76,9 @@ with tf.name_scope('output'):
 with tf.name_scope('optimizer'):
     base_cost = tf.reduce_mean(
         tf.nn.softmax_cross_entropy_with_logits(logits=model, labels=Y))
-    # lossL2 =  tf.reduce_mean(tf.nn.l2_loss(W1) + 
-    # tf.nn.l2_loss(W2) + tf.nn.l2_loss(W3))* 0.01
-    cost = base_cost # + lossL2 
+    lossL2 =  tf.reduce_mean(tf.nn.l2_loss(W1) + 
+            tf.nn.l2_loss(W2) + tf.nn.l2_loss(W3)) * L2beta
+    cost = base_cost + lossL2 
     update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
     with tf.control_dependencies(update_ops):
         optimizer = tf.train.AdamOptimizer(learning_rate).minimize(cost)
@@ -97,18 +98,24 @@ total_model_test = 2
 
 for model in range(total_model_test):
     LR_power = random.uniform(-6.0, -1.0)
-    random_learning_rate = 10 ** LR_power 
+    random_learning_rate = 10 ** LR_power
+    beta_power = random.uniform(-6.0, -1.0)
+    random_L2beta = 10 ** beta_power 
     sess.run(tf.global_variables_initializer())
     for epoch in range(1000):
         # for start, end in zip(range(0, len(trainX), batch_size),
         #    range(batch_size, len(trainX)+1, batch_size)):
         #    sess.run(optimizer, feed_dict={X: trainX[start:end], Y: trainY[start:end]})
         sess.run(optimizer, feed_dict={X: trainX, Y: trainY, keep_prob: 0.5, 
-                            is_training_holder: 1, learning_rate: random_learning_rate})
+                            is_training_holder: 1, learning_rate: random_learning_rate,
+                            L2beta: random_L2beta})
         test_acc, test_cost = sess.run([accuracy, cost], 
                         feed_dict={X: testX, Y: testY, keep_prob: 1.0, 
-                        is_training_holder: 0, learning_rate: random_learning_rate})
-    print('Learning rate:', '{:.4e}'.format(random_learning_rate), 'Test cost:', '{:.4f}'.format(test_cost),
+                        is_training_holder: 0, learning_rate: random_learning_rate,
+                        L2beta: random_L2beta})
+    print('Learning rate:', '{:.4e}'.format(random_learning_rate), 
+    'L2beta:', '{:.4e}'.format(random_L2beta),
+    'Test cost:', '{:.4f}'.format(test_cost),
     'Test accuracy:', '{:.4f}'.format(test_acc), 'Model:', str(model+1),'/',str(total_model_test))
 
 
