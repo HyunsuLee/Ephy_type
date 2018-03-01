@@ -95,6 +95,10 @@ sess = tf.Session()
 # TODO coarse iteration때는 test용이기 때문에 model, tensor logs를 안남기고,
 # fine tuning때 남길것.
 total_model_test = 2
+LR_list = []
+L2beta_list = []
+test_cost_list = []
+test_acc_list = []
 
 for model in range(total_model_test):
     LR_power = random.uniform(-6.0, -1.0)
@@ -117,7 +121,13 @@ for model in range(total_model_test):
     'L2beta:', '{:.4e}'.format(random_L2beta),
     'Test cost:', '{:.4f}'.format(test_cost),
     'Test accuracy:', '{:.4f}'.format(test_acc), 'Model:', str(model+1),'/',str(total_model_test))
+    LR_list += [random_learning_rate]
+    L2beta_list += [random_L2beta]
+    test_cost_list += [test_cost]
+    test_acc_list += [test_acc]
 
+combine_list = [LR_list] + [L2beta_list] + [test_cost_list] + [test_acc_list]
+combine_list
 
 
 
