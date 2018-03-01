@@ -26,7 +26,7 @@ created by data_processing_180227.ipynb
     _ramp.csv - ramp pulse protocol
 3 X 4 = 12. 12 different ANN models will be created.
 """
-log_path = '/180228binary_full/LR_placeholder_test/'
+log_path = '/180228binary_full/BN_control_denpendency_test/'
 summaries_dir = './logs/' + log_path # for tensorboard summary
 model_dir = './model/' + log_path # for model saver
 
@@ -105,6 +105,7 @@ with tf.name_scope('optimizer'):
     # lossL2 =  tf.reduce_mean(tf.nn.l2_loss(W1) + 
     # tf.nn.l2_loss(W2) + tf.nn.l2_loss(W3))* 0.01
     cost = base_cost # + lossL2 
+    update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
     with tf.control_dependencies(update_ops):
         optimizer = tf.train.AdamOptimizer(learning_rate).minimize(cost)
     tf.summary.scalar('cost', cost)
@@ -117,7 +118,7 @@ with tf.name_scope("accuracy"):
 summ = tf.summary.merge_all()
 
 saver = tf.train.Saver()
-update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
+
 sess = tf.Session()
 
 sess.run(tf.global_variables_initializer())
