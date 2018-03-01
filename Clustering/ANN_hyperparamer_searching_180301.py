@@ -127,7 +127,14 @@ for model in range(total_model_test):
     test_acc_list += [test_acc]
 
 combine_list = [LR_list] + [L2beta_list] + [test_cost_list] + [test_acc_list]
-combine_list
+combine_list = np.array(combine_list)
+
+import pandas as pd
+
+results = pd.DataFrame(combine_list.T, 
+        columns=['learning_rate'], ['L2_beta'], ['test_cost'], ['test_accuracy'])
+
+resulst.to_csv('./180301_hyparameter_test/binary_full.csv')
 
 
 
