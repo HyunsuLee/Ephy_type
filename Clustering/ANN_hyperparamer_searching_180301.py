@@ -107,9 +107,9 @@ for model in range(total_model_test):
                             is_training_holder: 1, learning_rate: random_learning_rate})
         test_acc, test_cost = sess.run([accuracy, cost], 
                         feed_dict={X: testX, Y: testY, keep_prob: 1.0, 
-                        is_training: 0, learning_rate: random_learning_rate})
-    print('Learning rate:', str(random_learning_rate), 'Test cost:', format(test_cost),
-    'Test accuracy:', format(test_acc), 'Model:', str(model+1),'/',str(total_model_test))
+                        is_training_holder: 0, learning_rate: random_learning_rate})
+    print('Learning rate:', '{:.4e}'.format(random_learning_rate), 'Test cost:', '{:.4f}'.format(test_cost),
+    'Test accuracy:', '{:.4f}'.format(test_acc), 'Model:', str(model+1),'/',str(total_model_test))
 
 
 
