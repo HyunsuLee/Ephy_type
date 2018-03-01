@@ -93,7 +93,8 @@ sess = tf.Session()
 # total_batch = int(len(trainX) / batch_size)
 
 # TODO coarse iteration때는 test용이기 때문에 model, tensor logs를 안남기고,
-# fine tuning때 남길것.
+# fine tuning때 남길것. 1차 fine tuning 때까진 없이.
+
 total_model_test = 500 
 LR_list = []
 L2beta_list = []
@@ -101,9 +102,9 @@ test_cost_list = []
 test_acc_list = []
 
 for model in range(total_model_test):
-    LR_power = random.uniform(-6.0, -1.0)
+    LR_power = random.uniform(-4.0, -2.0)
     random_learning_rate = 10 ** LR_power
-    beta_power = random.uniform(-6.0, -1.0)
+    beta_power = random.uniform(-6.0, -4.0)
     random_L2beta = 10 ** beta_power 
     sess.run(tf.global_variables_initializer())
     for epoch in range(1000):
@@ -134,7 +135,7 @@ import pandas as pd
 results = pd.DataFrame(combine_list.T, 
         columns=['learning_rate', 'L2_beta', 'test_cost', 'test_accuracy'])
 
-results.to_csv('./180301_hyperparameter_test/binary_full.csv')
+results.to_csv('./180301_hyperparameter_test/binary_full_fine1.csv')
 
 
 
