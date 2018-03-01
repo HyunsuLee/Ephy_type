@@ -140,3 +140,6 @@ for model in range(total_model_test):
     'L2beta:', '{:.4e}'.format(random_L2beta),
     'Test cost:', '{:.4f}'.format(test_cost),
     'Test accuracy:', '{:.4f}'.format(test_acc), 'Model:', str(model+1),'/',str(total_model_test))
+
+# tensorboard evaluated. 
+# LR3.792e-04 Beta1.762e-05 is the best
