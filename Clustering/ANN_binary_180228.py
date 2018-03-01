@@ -105,7 +105,8 @@ with tf.name_scope('optimizer'):
     # lossL2 =  tf.reduce_mean(tf.nn.l2_loss(W1) + 
     # tf.nn.l2_loss(W2) + tf.nn.l2_loss(W3))* 0.01
     cost = base_cost # + lossL2 
-    optimizer = tf.train.AdamOptimizer(learning_rate).minimize(cost)
+    with tf.control_dependencies(update_ops):
+        optimizer = tf.train.AdamOptimizer(learning_rate).minimize(cost)
     tf.summary.scalar('cost', cost)
 
 with tf.name_scope("accuracy"):
@@ -116,6 +117,7 @@ with tf.name_scope("accuracy"):
 summ = tf.summary.merge_all()
 
 saver = tf.train.Saver()
+update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
 sess = tf.Session()
 
 sess.run(tf.global_variables_initializer())
