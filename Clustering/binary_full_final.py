@@ -84,9 +84,10 @@ with tf.name_scope("accuracy"):
 summ = tf.summary.merge_all()
 saver = tf.train.Saver()
 sess = tf.Session()
+sess.run(tf.global_variables_initializer())
 
-random_learning_rate = 3.7e-4
-random_L2beta = 1.7e-5 
+random_learning_rate = 0.00037
+random_L2beta = 0.000017 
 train_writer = tf.summary.FileWriter(summaries_dir + '/train')
 test_writer = tf.summary.FileWriter(summaries_dir + '/test') # $ tensorboard --logdir ./logs
 train_writer.add_graph(sess.graph)
