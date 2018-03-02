@@ -28,12 +28,15 @@ created by data_processing_180227.ipynb
     _ramp.csv - ramp pulse protocol            16
 3 X 4 = 12. 12 different ANN models will be created.
 """
+input_protocol = 'long' # change X place holder and layer shapes
+output_class = 'B'      # change Y place holder and layer shapes
+result_path = './180301_hyperparameter_test/01_1_binary_long_coarse.csv'
 
-trainX = np.loadtxt(data_path + 'Btrain_longX_minmax.csv', delimiter = ',')
-trainY = np.loadtxt(data_path + 'Btrain_longY.csv', delimiter = ',')
+trainX = np.loadtxt(data_path + output_class + 'train_' + input_protocol + 'X_minmax.csv', delimiter = ',')
+trainY = np.loadtxt(data_path + output_class + 'train_' + input_protocol + 'Y.csv', delimiter = ',')
 
-testX = np.loadtxt(data_path + 'Btest_longX_minmax.csv', delimiter = ',')
-testY = np.loadtxt(data_path + 'Btest_longY.csv', delimiter = ',')
+testX = np.loadtxt(data_path + output_class + 'test_' + input_protocol + 'X_minmax.csv', delimiter = ',')
+testY = np.loadtxt(data_path + output_class + 'test_' + input_protocol + 'Y.csv', delimiter = ',')
 
 X = tf.placeholder(tf.float32, [None, 21]) 
 Y = tf.placeholder(tf.float32, [None, 2]) # binary E vs I class
@@ -126,7 +129,7 @@ import pandas as pd
 results = pd.DataFrame(combine_list.T, 
         columns=['learning_rate', 'L2_beta', 'test_cost', 'test_accuracy'])
 
-results.to_csv('./180301_hyperparameter_test/01_1_binary_long_coarse.csv')
+results.to_csv(result_path)
 
 
 
