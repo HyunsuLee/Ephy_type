@@ -48,8 +48,6 @@ epsilon = 1e-3 # for Batch normalization
 layer1_shape = [43, 40]
 layer2_shape = [40, 20]
 output_shape = [20, 10] 
-# TODO output shape problem!!!
-
 
 def weight_init(shape, name_for_weight):
     Xavier_init = np.sqrt(2.0) * np.sqrt(2.0 / np.array(shape).sum())
