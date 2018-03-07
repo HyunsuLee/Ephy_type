@@ -13,7 +13,7 @@ import numpy as np
 import pandas as pd
 
 data_path = './180228tensordata_minmax/'
-# ?log_path = '/180301binary_full/hyperparameter_test/'
+log_path = '/binary_long/'
 summaries_dir = './logs/' + log_path # for tensorboard summary
 model_dir = './model/' + log_path # for model saver
 
