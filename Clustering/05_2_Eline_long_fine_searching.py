@@ -39,7 +39,7 @@ testX = np.loadtxt(data_path + output_class + 'test' + input_protocol + 'X_minma
 testY = np.loadtxt(data_path + output_class + 'test' + input_protocol + 'Y.csv', delimiter = ',')
 
 X = tf.placeholder(tf.float32, [None, 21]) 
-Y = tf.placeholder(tf.float32, [None, 10]) # binary E vs I class
+Y = tf.placeholder(tf.float32, [None, 10])
 keep_prob = tf.placeholder(tf.float32)
 is_training_holder = tf.placeholder(tf.bool)
 learning_rate = tf.placeholder(tf.float32)
@@ -103,7 +103,7 @@ for model in range(total_model_test):
     beta_power = random.uniform(-6.0, -3.0)
     random_L2beta = 10 ** beta_power 
     sess.run(tf.global_variables_initializer())
-    for epoch in range(10000):
+    for epoch in range(5000):
         sess.run(optimizer, feed_dict={X: trainX, Y: trainY, keep_prob: 0.5, 
                             is_training_holder: 1, learning_rate: random_learning_rate,
                             L2beta: random_L2beta})
