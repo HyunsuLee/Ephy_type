@@ -39,7 +39,7 @@ testX = np.loadtxt(data_path + output_class + 'test' + input_protocol + 'X_minma
 testY = np.loadtxt(data_path + output_class + 'test' + input_protocol + 'Y.csv', delimiter = ',')
 
 X = tf.placeholder(tf.float32, [None, 43]) 
-Y = tf.placeholder(tf.float32, [None, 8]) # binary E vs I class
+Y = tf.placeholder(tf.float32, [None, 8]) 
 keep_prob = tf.placeholder(tf.float32)
 is_training_holder = tf.placeholder(tf.bool)
 learning_rate = tf.placeholder(tf.float32)

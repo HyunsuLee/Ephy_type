@@ -14,7 +14,7 @@ import pandas as pd
 
 data_path = './180228tensordata_minmax/'
 log_path = '/Eline_long/'
-summaries_dir = './logs/' + log_path # for tensorboard summary
+summaries_dir = './logs/' + log_path + '/2nd/' # for tensorboard summary
 model_dir = './model/' + log_path # for model saver
 
 input_protocol = '_long' # change X place holder and layer shapes
@@ -132,8 +132,7 @@ for model in range(total_model_test):
                         L2beta: random_L2beta})
             print('Epoch:', '%04d' % (epoch +1), 'Test cost:', '{:.4f}'.format(test_cost),
                   'Test accuracy:', '{:.4f}'.format(test_acc))
-    
-    saver.save(sess, model_dir + each_model_dir + '/ANN.ckpt')
+            saver.save(sess, model_dir + each_model_dir + '/ANN.ckpt', epoch)
     print('Learning rate:', '{:.4e}'.format(random_learning_rate), 
     'L2beta:', '{:.4e}'.format(random_L2beta),
     'Test cost:', '{:.4f}'.format(test_cost),
