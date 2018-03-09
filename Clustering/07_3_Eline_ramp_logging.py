@@ -14,7 +14,7 @@ import pandas as pd
 
 data_path = './180228tensordata_minmax/'
 log_path = '/Eline_ramp/'
-summaries_dir = './logs/' + log_path + '/2nd/'# for tensorboard summary
+summaries_dir = './logs/' + log_path + '/2nd/' # for tensorboard summary
 model_dir = './model/' + log_path # for model saver
 
 input_protocol = '_ramp' # change X place holder and layer shapes
