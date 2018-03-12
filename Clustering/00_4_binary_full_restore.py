@@ -4,31 +4,43 @@
 created 2018-03-01
 @author: hyunsu
 """
-# binary model 180301.py tensorboard evaluated(results from 1st fine tuning) 
-# LR3.792e-04Beta1.762e-05 is best
+# for tensorflow ANN. hyperparameter searching test python
+# and writing tensorboard logs
+# testing 10 models, fine tuned results load 
 
 import tensorflow as tf
 import numpy as np
+import pandas as pd
 import os
 
 data_path = './180228tensordata_minmax/'
-log_path = '/180301binary_full/final/'
+log_path = '/binary_full/'
 model_dir = './model/' + log_path # for model saver
 
-testX = np.loadtxt(data_path + 'BtestX_minmax.csv', delimiter = ',')
-testY = np.loadtxt(data_path + 'BtestY.csv', delimiter = ',')
+input_protocol = '' # change X place holder and layer shapes
+output_class = 'B'      # change Y place holder and layer shapes
+result_path = './180301_hyperparameter_test/binary_full_fine1.csv'
+HP_df = pd.read_csv(result_path)
+HP_np = np.array(HP_df.sort_values('test_cost').head(10))
+Best_model_no = 5
+
+random_learning_rate = HP_np[Best_model_no][1]
+random_L2beta = HP_np[Best_model_no][2]
+best_model_dir = model_dir + ('Model'+str(Best_model_no)+'LR'+'{:.3e}'.format(random_learning_rate) 
+                + 'Beta' + '{:.3e}'.format(random_L2beta) + '/')
+
+testX = np.loadtxt(data_path + output_class + 'test' + input_protocol + 'X_minmax.csv', delimiter = ',')
+testY = np.loadtxt(data_path + output_class + 'test' + input_protocol + 'Y.csv', delimiter = ',')
 
 X = tf.placeholder(tf.float32, [None, 43]) # for full model, 43 input features
 Y = tf.placeholder(tf.float32, [None, 2]) # binary E vs I class
 keep_prob = tf.placeholder(tf.float32)
 is_training_holder = tf.placeholder(tf.bool)
-# learning_rate = tf.placeholder(tf.float32)
 L2beta = tf.placeholder(tf.float32)
 epsilon = 1e-3 # for Batch normalization
 layer1_shape = [43, 20]
 layer2_shape = [20, 10]
 output_shape = [10, 2]
-
 
 def weight_init(shape, name_for_weight):
     Xavier_init = np.sqrt(2.0) * np.sqrt(2.0 / np.array(shape).sum())
@@ -42,7 +54,7 @@ with tf.name_scope('layer1'):
           is_training = is_training_holder) 
     L1 = tf.nn.relu(BN1)
     L1 = tf.nn.dropout(L1, keep_prob)
-    
+
 with tf.name_scope('layer2'):
     W2 = weight_init(layer2_shape, 'W2')
     z2 = tf.matmul(L1, W2)
@@ -56,7 +68,7 @@ with tf.name_scope('output'):
     b3 = tf.Variable(tf.random_normal([output_shape[1]]))
     model = tf.matmul(L2, W3) + b3
 
-model_checkpoint_all = os.listdir(model_dir)
+model_checkpoint_all = os.listdir(best_model_dir)
 
 models_list = []
 for model_checkpoints in model_checkpoint_all:
@@ -66,12 +78,11 @@ for model_checkpoints in model_checkpoint_all:
 sess = tf.InteractiveSession()
 saver = tf.train.Saver(tf.global_variables())
 
-random_L2beta = 0.000017 
+lowest_cost = 10.0
 
-lowest_cost = 1.0
 for model_checks in models_list:
-    saver = tf.train.import_meta_graph(model_dir + model_checks + '.meta')
-    saver.restore(sess, model_dir + model_checks)
+    saver = tf.train.import_meta_graph(best_model_dir + model_checks + '.meta')
+    saver.restore(sess, best_model_dir + model_checks)
 
     with tf.name_scope("accuracy"):
         is_correct = tf.equal(tf.argmax(model, 1), tf.argmax(Y, 1))
@@ -82,8 +93,8 @@ for model_checks in models_list:
             tf.nn.softmax_cross_entropy_with_logits(logits=model, labels=Y))
         lossL2 =  tf.reduce_mean(tf.nn.l2_loss(W1) + 
             tf.nn.l2_loss(W2) + tf.nn.l2_loss(W3)) * L2beta
-        cost = base_cost + lossL2 
-    
+        cost = base_cost + lossL2
+
     cost = sess.run(cost, 
                 feed_dict={X: testX, Y: testY, keep_prob: 1.0,
                 is_training_holder: 0, L2beta: random_L2beta})
@@ -95,16 +106,17 @@ for model_checks in models_list:
     
     if cost < lowest_cost:
         lowest_cost = cost
-        best_model = model_checks
+        best_model_step = model_checks
 
-print('Lowest cost:', '{:.4f}'.format(lowest_cost), 'Best model:', best_model)
+print('Lowest cost:', '{:.4f}'.format(lowest_cost), 'Best model:', best_model_step)
 
-saver = tf.train.import_meta_graph(model_dir + best_model + '.meta')
-saver.restore(sess, model_dir + best_model)
+saver = tf.train.import_meta_graph(best_model_dir + best_model_step + '.meta')
+saver.restore(sess, best_model_dir + best_model_step)
 
 model_eval = sess.run(model, feed_dict = {X: testX, Y: testY, keep_prob: 1.0,
                 is_training_holder: 0, L2beta: random_L2beta})
 model_prob = sess.run(tf.nn.softmax(model_eval))
 
-np.savetxt('./results/BtestY_ANNmodel_prob.csv', model_prob, delimiter=',')
+np.savetxt('./results/00_4_binary_full_ANNmodel_prob.csv', model_prob, delimiter=',')
 np.savetxt('./results/BtestY.csv', testY, delimiter = ',')
+
